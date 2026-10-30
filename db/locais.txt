@@ -1,0 +1,217 @@
+Abrigo de Adolescentes
+Assistência / Ação Social
+ACESF
+Administração
+Aeroporto
+Aeroporto Meteorologia
+Agência do Trabalhador
+Agendamento Sesc - Saúde
+Agricultura
+Alvará
+Arrecadação
+ASSEMU
+Atenção Primária
+Aterro Sanitário
+Atos Oficiais
+Banco de Alimentos
+CAEI (SME)
+Casa do Empreendedor
+Casa dos Conselhos
+Cadastro Único
+CEASA
+CEM
+Centro cívico
+Centro da Juventude
+Centro de Eventos Alexandre Ceranto
+CIS - Saúde
+CRMI
+Centro Dia
+Centro de Especialidades Anchieta
+Centro POP
+CEO
+Clube de Mães
+CMDPE
+Centro Mun. de Desenv. e Pesquisa em Educação
+CMEI Birigui
+CMEI Cândido Portinari
+CMEI Cecília Meireles
+CMEI Cora Coralina
+CMEI Graciliano Ramos
+CMEI Helena Kolody
+CMEI Ignácio Urbainski
+CMEI Inácia Dutra
+CMEI Madre Paulina
+CMEI Maria Arlete Alves dos Santos
+CMEI Maria Montessori
+CMEI Professora Maria Yokohama Watanabe
+CMEI Professora Nelly Gonçalves
+CMEI Rachel de Queiroz
+CMEI Ranice Benedito de Araújo Teixeira
+CMEI Rubem Alves
+CMEI São Cristóvão
+CMEI São Francisco
+CMEI São Paulo Apóstolo
+CMEI Tarsila do Amaral
+CMEI Vilmar Silveira
+Conselho Municipal de Saúde
+Conselho Tutelar
+Contabilidade
+Controle Interno
+Convênios
+COOPERU
+Corpo de Bombeiros
+CRAS I
+CRAS II
+CRAS III
+CREAS
+CREAS/CRAM
+Creche Casa da Criança
+Creche CEMIC Pingo de Gente
+Creche Cileneu Romero Cervantes
+Creche Izia Rodrigues Silva
+Creche Jardim Cruzeiro
+Creche Marian Pavani Cernic
+Creche Pequeno Cidadão
+Creche Pequeno Polegar
+Delegacia de Polícia Civil de Umuarama
+DCA
+Dívida Ativa
+Documentação Escolar
+DST
+Diretoria de Tecnologia e Informação
+DTI - Manutenção
+Educação
+Educação Infantil
+Estádio Lúcio Pipino
+Escola Analides
+Escola Benjamin Constant (Roberto Silveira)
+Escola Cândido Portinari
+Escola Carlos Gomes
+Escola de Serra
+Escola Dr. Angelo
+Escola Dr. Germano
+Escola Evangélica
+Escola Isa Mesquita (EJA)
+Escola Jardim Birigui
+Escola Jardim União
+Escola Malba Tahan
+Escola Maria Augusta
+Escola Manoel Bandeira
+Escola Municipal Papa Pio X
+Escola Ouro Branco
+Escola Papa Pio XII
+Escola Paulo Freire
+Escola Pe. José Anchieta
+Escola Isabel Cristina Verhalen Correa
+Escola Rui Barbosa
+Escola Santa Eliza
+Escola São Cristóvão
+Escola São Francisco
+Escola Sebastião de Matos
+Escola Suza Naves
+Escola Tempo Integral
+Escola Vinicius de Moraes
+Empresa Pública de Umuarama
+Farmácia Central
+Rede de Frios
+Farmácia AV. Estação
+Farmácia - Alto Boa Vista
+Farmácia Alto São Francisco
+Fazenda
+Fiscais
+FPMU
+Fundação Cultural
+Gabinete
+Ginásio de Esportes
+Guarda Municipal
+Habitação
+ITAITEA
+ICMS
+Imprensa - Comunicação Social
+INCRA
+Indústria e Comércio
+Integração Comunitária
+IPTU
+ISSQN
+ITBI
+Junta Militar
+Jurídico
+Licitação
+Lixo Que Vale
+Meio Ambiente
+Merenda
+NASF
+Obras
+Odontologia
+Orçamento
+Ouvidoria
+PABX
+Parque Tecnológico
+Pappi
+Pátio
+Patrimônio
+PETI
+Planejamento
+Planejamento Orçamentário
+Planejamento Urbano
+Postura
+Pró EGRESSO
+Procon
+Projeto Família Acolhedora
+Projeto Técnico
+Pronto Atendimento
+Protocolo
+PS 1º de Maio
+PS 26 de Junho
+PS Alto São Francisco
+PS Bem Estar
+PS Campo Belo
+PS Central
+PS Central - Guichê
+PS Central - TFD
+PS Cidade Alta
+PS Cohapar I - Jd União
+PS Cohapar II São Cristovão
+PS Cohapar III - J.Cruzeiro
+PS Guarani Anchieta
+PS Industrial
+PS Jatubicaeiras
+PS Jardim Lisboa
+PS Jatovat
+PS Ouro Branco
+PS Panorama
+PS Roberto Silveira
+PS San Remo
+PS Santa Eliza
+PS Serrados Dourados
+PS Sonho Meu
+PS Vila Nova União
+PS Vitoria Regina
+Recursos Humanos
+Registro Imobiliário
+Regulação Sec Saúde
+Restaurante Popular
+Rodoviária
+Sala de Sindicância
+SAMU
+SAP - Serviço de Atendimento Psicológico
+SIC
+Secretaria de Aceleração Econômica
+Secretaria Executiva dos Conselhos
+Secretaria de Saúde
+Serviço Social Farmácia
+Serviço Social Secretaria de Saúde
+SCFVI
+SESMT
+Telefonista
+Tesouraria
+TFD - Sec. Saúde
+Tiro de Guerra
+Transporte Escolar
+UAB
+Umutrans - Guarda Municipal
+Vigilância Ambiental
+Vigilância Sanitária
+Vigilância Sanitária - Epidemiologia
+SESTRAM - Secretaria de Trânsito
+Zona Azul Digital

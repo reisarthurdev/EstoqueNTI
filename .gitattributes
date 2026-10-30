@@ -1,0 +1,3 @@
+# Mantém finais de linha LF (o Windows converteria para CRLF e quebraria scripts dentro do container)
+* text=auto eol=lf
+*.sql.gz binary

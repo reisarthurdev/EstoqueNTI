@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@source "../public";
+
+/* Fundo azul claro com manchas de luz borradas */
+body {
+  min-height: 100vh;
+  color: #1e293b;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #cffafe 100%) fixed;
+  overflow-x: clip; /* rede de segurança: nunca aparece rolagem horizontal na página */
+}
+body::before, body::after { content: ''; position: fixed; z-index: -1; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+body::before { width: 540px; height: 540px; top: -140px; left: -100px; background: rgb(56 189 248 / .35); }
+body::after { width: 600px; height: 600px; right: -140px; bottom: -180px; background: rgb(34 211 238 / .28); }
+
+/* Vidro fosco (translúcido + blur) */
+.glass, .glass-strong {
+  border: 1px solid rgb(255 255 255 / .75);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: 0 8px 32px rgb(14 116 144 / .10), inset 0 1px 0 rgb(255 255 255 / .6);
+}
+.glass { background: rgb(255 255 255 / .5); }
+.glass-strong { background: rgb(255 255 255 / .8); }
+
+/* Menu de local: opaco, vai para a camada de cima do navegador (popover) */
+.solid-menu, .picker-menu { color: #1e293b; background: #fff; border: 1px solid rgb(186 230 253); box-shadow: 0 12px 32px rgb(14 116 144 / .18); }
+[data-picker][data-open] > button svg { transform: rotate(180deg); }
+
+nav a.active, [data-menu-panel] a.active { background: rgb(255 255 255 / .9); color: #0369a1; box-shadow: 0 1px 4px rgb(14 116 144 / .15); }
+
+/* Aviso (toast): fica na camada de cima do navegador, então aparece até por cima de janelas abertas */
+.toast { position: fixed; inset: auto 1rem 1rem auto; margin: 0; max-width: min(24rem, calc(100vw - 2rem)); border: 0; border-radius: .75rem; padding: .65rem 1rem; font-size: .875rem; line-height: 1.35; color: #fff; box-shadow: 0 10px 30px rgb(15 23 42 / .25); cursor: pointer; }
+.toast-ok { background: #10b981; }
+.toast-err { background: #f43f5e; }
+@media (max-width: 639.98px) { .toast { inset: auto .75rem .75rem .75rem; max-width: none; } }
+
+/* Celular: cada linha da tabela vira um cartão (o rótulo da coluna vem do atributo data-label) */
+@media (max-width: 767.98px) {
+  .stack thead { display: none; }
+  .stack, .stack tbody, .stack tr { display: block; width: 100%; }
+  .stack tr { padding: .75rem 1rem; border-bottom: 1px solid rgb(255 255 255 / .6); }
+  .stack td { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .3rem 0; text-align: right; }
+  .stack td::before { content: attr(data-label); flex: none; font-size: .75rem; color: #64748b; text-align: left; }
+  .stack td[data-label=""]::before { display: none; }
+  .stack td:first-child { justify-content: flex-start; text-align: left; padding-bottom: .5rem; }
+  .stack td:first-child::before { display: none; }
+  .stack td[data-label=""]:not(:first-child) { justify-content: flex-start; flex-wrap: wrap; padding-top: .5rem; }
+  /* ações da linha viram botões com área de toque de 40px */
+  .stack td[data-label=""]:not(:first-child) button { min-height: 2.5rem; padding: 0 .9rem; border: 1px solid rgb(255 255 255 / .8); border-radius: .75rem; background: rgb(255 255 255 / .6); }
+  /* colunas menos importantes só no celular (a classe do Tailwind perderia para a regra display:flex acima) */
+  .stack td.hide-mobile { display: none; }
+}
+
+/* Impressão do relatório */
+#print-area { display: none; }
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  body > *:not(#print-area) { display: none !important; }
+  body::before, body::after { display: none; }
+  body { background: #fff !important; }
+  #print-area { display: block; color: #000; font: 11px/1.4 "Segoe UI", Arial, sans-serif; }
+  #print-area h1 { font-size: 18px; margin: 0 0 4px; }
+  #print-area p { margin: 2px 0; }
+  #print-area table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+  #print-area th, #print-area td { border: 1px solid #94a3b8; padding: 3px 5px; text-align: left; vertical-align: top; }
+  #print-area th { background: #e0f2fe; }
+  #print-area thead { display: table-header-group; }
+  #print-area tr { break-inside: avoid; }
+  #print-area .sign { margin-top: 28px; }
+}

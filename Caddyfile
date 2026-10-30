@@ -1,0 +1,9 @@
+# Proxy reverso com HTTPS. Variáveis (no .env):
+#   SITE_ADDRESS  domínio ou nome do servidor (padrão: localhost)
+#   TLS_MODE      "internal" = certificado da CA interna do Caddy (rede interna / testes)
+#                 ou um e-mail (ex.: ti@exemplo.gov.br) = certificado Let's Encrypt (precisa de domínio público)
+{$SITE_ADDRESS:localhost} {
+	tls {$TLS_MODE:internal}
+	encode zstd gzip
+	reverse_proxy app:3000
+}

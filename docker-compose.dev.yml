@@ -1,0 +1,21 @@
+# Desenvolvimento (recarrega o app quando você edita arquivos):
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml watch
+services:
+  db:
+    # Publica o MySQL só no seu computador, para DBeaver/Workbench (porta 3307 para não colidir com um MySQL local).
+    ports:
+      - "127.0.0.1:${DB_DEV_PORT:-3307}:3306"
+  app:
+    read_only: false
+    environment:
+      NODE_ENV: development
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /app/src
+        - action: sync
+          path: ./public
+          target: /app/public
+        - action: rebuild
+          path: package.json

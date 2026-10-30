@@ -1,0 +1,186 @@
+# Estoque NTI: app (Node 24) + banco (MySQL 8.4 LTS) + migração automática.
+#
+#   Subir / atualizar : docker compose up -d --build
+#   Logs              : docker compose logs -f app
+#   Backup            : docker compose --profile tools run --rm backup
+#   HTTPS (Caddy)     : docker compose --profile https up -d --build     (veja o README)
+name: estoque-nti
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-build: &build
+  context: .
+  target: runtime
+
+# Variáveis comuns ao app e ao job de migração. As senhas vêm do arquivo .env (e a subida falha se faltarem).
+x-app-env: &app-env
+  NODE_ENV: production
+  TZ: ${TZ:-America/Sao_Paulo}
+  PORT: "3000"
+  DB_HOST: db
+  DB_PORT: "3306"
+  DB_NAME: ${DB_NAME:-estoque_nti}
+  DB_USER: ${DB_APP_USER:-estoque}
+  DB_PASSWORD: ${DB_APP_PASSWORD:?Defina DB_APP_PASSWORD no .env}
+  JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET no .env}
+  COOKIE_SECURE: ${COOKIE_SECURE:-false}
+  TRUST_PROXY: ${TRUST_PROXY:-0}
+  SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+  SUPPORT_PHONE: ${SUPPORT_PHONE:-}
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Sao_Paulo}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Defina DB_ROOT_PASSWORD no .env}
+      MYSQL_DATABASE: ${DB_NAME:-estoque_nti}
+      MYSQL_USER: ${DB_APP_USER:-estoque}
+      MYSQL_PASSWORD: ${DB_APP_PASSWORD:?Defina DB_APP_PASSWORD no .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    volumes:
+      - db-data:/var/lib/mysql
+    # Sem "ports": o banco só é acessível pelos outros containers (use o override de dev para publicar).
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    logging: *logging
+
+  # Job de uma execução: cria/atualiza tabelas, categorias, locais e o primeiro admin. O app só sobe depois dele.
+  migrate:
+    image: estoque-nti:${APP_VERSION:-latest}
+    build: *build
+    command: ["node", "scripts/setup.js"]
+    restart: "no"
+    environment:
+      <<: *app-env
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+    healthcheck:
+      disable: true
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *logging
+
+  app:
+    image: estoque-nti:${APP_VERSION:-latest}
+    build: *build
+    restart: unless-stopped
+    init: true
+    environment: *app-env
+    ports:
+      - "${APP_BIND:-0.0.0.0}:${APP_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    # Endurecimento: sistema de arquivos somente leitura, sem privilégios extras.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    logging: *logging
+
+  # HTTPS com certificado automático (perfil opcional "https").
+  proxy:
+    profiles: ["https"]
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-localhost}
+      TLS_MODE: ${TLS_MODE:-internal}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    logging: *logging
+
+  # docker compose --profile tools run --rm backup   -> gera ./backups/estoque-AAAAMMDD-HHMMSS.sql.gz
+  backup:
+    profiles: ["tools"]
+    image: mysql:8.4
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-America/Sao_Paulo}
+      MYSQL_PWD: ${DB_APP_PASSWORD:?Defina DB_APP_PASSWORD no .env}
+      DB_USER: ${DB_APP_USER:-estoque}
+      DB_NAME: ${DB_NAME:-estoque_nti}
+      KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["bash", "-c"]
+    command:
+      - |
+        set -eo pipefail
+        file="/backups/estoque-$$(date +%Y%m%d-%H%M%S).sql.gz"
+        tmp="$$file.partial"
+        # grava num arquivo temporário e só renomeia no sucesso: um backup que falha (ou é interrompido)
+        # nunca deixa um .sql.gz truncado nem apaga um backup bom
+        trap 'rm -f "$$tmp"' EXIT
+        mysqldump -h db -u "$$DB_USER" --single-transaction --routines --no-tablespaces "$$DB_NAME" | gzip > "$$tmp"
+        mv "$$tmp" "$$file"
+        echo "Backup salvo em $$file"
+        find /backups -name 'estoque-*.sql.gz' -mtime +"$$KEEP_DAYS" -delete || true
+
+  # docker compose --profile tools run --rm -e FILE=estoque-AAAAMMDD-HHMMSS.sql.gz restore
+  restore:
+    profiles: ["tools"]
+    image: mysql:8.4
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_PWD: ${DB_APP_PASSWORD:?Defina DB_APP_PASSWORD no .env}
+      DB_USER: ${DB_APP_USER:-estoque}
+      DB_NAME: ${DB_NAME:-estoque_nti}
+      FILE: ${FILE:-}
+    volumes:
+      - ./backups:/backups:ro
+    entrypoint: ["bash", "-c"]
+    command:
+      - |
+        set -eo pipefail
+        [ -n "$$FILE" ] || { echo "Informe o arquivo: docker compose --profile tools run --rm -e FILE=nome.sql.gz restore"; exit 1; }
+        [ -f "/backups/$$FILE" ] || { echo "Arquivo /backups/$$FILE não existe"; exit 1; }
+        case "$$FILE" in
+          *.gz) gunzip -c "/backups/$$FILE" ;;
+          *)    cat "/backups/$$FILE" ;;
+        esac | mysql -h db -u "$$DB_USER" "$$DB_NAME"
+        echo "Restauração concluída: $$FILE"
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:
